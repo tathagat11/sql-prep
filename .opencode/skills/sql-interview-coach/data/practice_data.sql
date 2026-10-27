@@ -141,11 +141,11 @@ INSERT INTO order_items (order_id, product_id, quantity, unit_price) VALUES
   (8, 3, 1, 59.00),
   (9, 1, 1, 1990.00),
   (9, 7, 2, 40.00),          -- discounted unit price vs list price
-  (9, 8, 1, 120.00),         -- note: 1990+80+120 = 2190 but order total says 858 (integrity trap!)
+  (9, 8, 1, 120.00),         -- note: 1990+80+120 = 2190 but order total says 858 (intentional data-quality discrepancy)
   (10, 2, 1, 129.00),
   (10, 7, 1, 35.00),
   (11, 1, 1, 1990.00),
-  (11, 4, 1, 449.00),        -- 1990+449 = 2439 vs order total 2519 (another mismatch)
+  (11, 4, 1, 449.00),        -- 1990+449 = 2439 vs order total 2519 (also mismatched)
   (13, 3, 1, 59.00),
   (13, 7, 1, 25.00),
   (14, 8, 1, 121.00),

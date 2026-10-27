@@ -1,6 +1,8 @@
-# Shipping inside the skill: lets npx-install users bootstrap without the
-# repo. The skill loads the dataset manually (psql) rather than via
-# /docker-entrypoint-initdb.d, so skill install location doesn't matter.
+# Provided inside the skill so installations via `npx skills add` can
+# bootstrap the database without cloning this repository. The skill loads
+# practice_data.sql through psql rather than a
+# docker-entrypoint-initdb.d mount, because the mount path must be
+# relative to the repository layout.
 services:
   db:
     image: postgres:17-alpine
