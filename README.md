@@ -18,7 +18,21 @@ not to copy answers.
 - Docker
 - An AI agent that supports the skills format (npx comes with Node.js)
 
-## Setup (3 commands)
+## Setup (npx only)
+
+Install the coach skill for your agent:
+
+```bash
+npx skills add <your-github-username>/sql-prep@sql-interview-coach
+```
+
+Then in your agent: *"start SQL interview coaching"*. The coach bootstraps
+its own Postgres container on first run (writes the compose file, starts it,
+loads the practice dataset), then runs a short 5-question assessment to place
+you in the curriculum. Your data persists across sessions — reboot safe, and
+re-seeding after a machine wipe is one command.
+
+## Setup (full repo alternative)
 
 ```bash
 git clone https://github.com/<your-github-username>/sql-prep
@@ -26,14 +40,8 @@ cd sql-prep
 docker compose up -d db   # first boot auto-seeds the practice dataset
 ```
 
-Then install the coach skill for your agent:
-
-```bash
-npx skills add <your-github-username>/sql-prep@sql-interview-coach
-```
-
-And in your agent: *"start SQL interview coaching"* — the first session runs
-a short 5-question assessment and places you in the curriculum.
+Then install the skill the same way (or point your agent at the skill kept in
+`.opencode/skills/sql-interview-coach/`).
 
 ## No agent? Still usable
 

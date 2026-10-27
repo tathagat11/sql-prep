@@ -58,29 +58,46 @@ Then pin the starting point of the curriculum accordingly and record it in
 
 ## Practice Environment
 
-Postgres 17 is provided by the repository's `docker-compose.yml` (db:
-`postgres_db`, database `mydatabase`, user `myuser`, password
-`mysecretpassword`, port 5432). The container also runs pgAdmin at
-http://localhost:5050 (login: admin@example.com / adminpassword) for people
-working without an agent.
+The coach expects a Postgres 17 container (container `postgres_db`, database
+`mydatabase`, user `myuser`, password `mysecretpassword`, port 5432), and can
+bootstrap it itself. pgAdmin runs at http://localhost:5050 (login:
+admin@example.com / adminpassword) for people working without an agent.
 
-Setup assumptions and fallbacks:
+### First-run bootstrap (only when nothing is running)
 
-1. Check it's up: `docker ps --filter name=postgres_db`
-2. Start it if needed: `docker compose up -d db` (project root - next to
-   docker-compose.yml, which may be the working directory or a sibling of the
-   skill directory depending on install method).
-3. The dataset auto-loads only on the FIRST boot of an empty Postgres volume.
-   Sanity check: `SELECT count(*) FROM orders;`. If that fails (tables
-   missing), load manually:
+1. `docker ps --filter name=postgres_db` - if listed, skip to the sanity
+   check below.
+2. If `docker-compose.yml` is missing from the user's project directory, copy
+   `<skill-dir>/setup/docker-compose.yml` there first, then `cd` there.
+3. `docker compose up -d db`
+4. Load the dataset:
    `docker exec -i postgres_db psql -U myuser -d mydatabase <
-   <skill-dir>/data/practice_data.sql` - the data file lives next to this
-   SKILL.md in `data/practice_data.sql`; locate it relative to where the
-   skill is installed.
-4. Run SQL for the user:
-   `docker exec -i postgres_db psql -U myuser -d mydatabase`
-5. No docker available? Fall back to SQLite at `/tmp/opencode/practice.db`
-   (translate the dataset first) and tell the user the syntax differences.
+   <skill-dir>/data/practice_data.sql`
+   (`data/practice_data.sql` ships with this skill.)
+
+### Sanity check (start of every session)
+
+    docker exec -i postgres_db psql -U myuser -d mydatabase -c "SELECT count(*) FROM orders;"
+
+- Error (no tables) or 0 rows → run the dataset load command above
+  (idempotent, safe to re-run).
+- row count 18 → healthy seed state.
+- Any other positive count → a user session mutated committed data; ask the
+  user whether to reset (`docker exec -i ... < data/practice_data.sql`) or
+  continue.
+
+### Resume behavior
+
+`restart: always` revives the container with the Docker daemon, and data
+persists in the `pgdata` volume - reboot/restart exercises no reseed. Only
+`docker compose down -v` or deleting the volume loses data; re-seeding is the
+single load command. Reseeding also restores a clean, known dataset - ask
+before resetting anything containing user exercise data.
+
+- Run SQL for the user:
+  `docker exec -i postgres_db psql -U myuser -d mydatabase`
+- No docker available? Fall back to SQLite at `/tmp/opencode/practice.db`
+  (translate the dataset first) and tell the user the syntax differences.
 
 - When running a user's attempted query, wrap in a transaction and roll back so
   practice data is never mutated by accident, e.g.:
