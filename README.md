@@ -24,7 +24,7 @@ reference answers.
 Install the coach skill for your agent:
 
 ```bash
-npx skills add <your-github-username>/sql-prep@sql-interview-coach
+npx skills add tathagat11/sql-prep@sql-interview-coach
 ```
 
 Then in your agent: *"start SQL interview coaching"*. The coach bootstraps
@@ -36,7 +36,7 @@ re-seeding after a volume wipe is a single command.
 ## Setup (full repo alternative)
 
 ```bash
-git clone https://github.com/<your-github-username>/sql-prep
+git clone https://github.com/tathagat11/sql-prep
 cd sql-prep
 docker compose up -d db   # first boot auto-seeds the practice dataset
 ```
