@@ -1,0 +1,9 @@
+pgdata/
+.DS_Store
+Thumbs.db
+
+# user-generated practice state (personal, not part of the repo)
+progress.md
+practice/
+output.out
+attempt.sql

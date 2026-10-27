@@ -1,0 +1,30 @@
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_DB: mydatabase
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Auto-loads the practice dataset on FIRST boot of an empty volume.
+      - ./.opencode/skills/sql-interview-coach/data/practice_data.sql:/docker-entrypoint-initdb.d/00-practice-data.sql:ro
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin_ui
+    restart: always
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: adminpassword
+    depends_on:
+      - db
+
+volumes:
+  pgdata:
